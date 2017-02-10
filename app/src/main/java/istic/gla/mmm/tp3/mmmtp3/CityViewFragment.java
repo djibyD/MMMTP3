@@ -1,14 +1,26 @@
 package istic.gla.mmm.tp3.mmmtp3;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.Switch;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 /**
@@ -16,6 +28,7 @@ import android.widget.Switch;
  */
 public class CityViewFragment extends Fragment {
 
+    private String cityName;
 
     public CityViewFragment() {
         // Required empty public constructor
@@ -34,9 +47,16 @@ public class CityViewFragment extends Fragment {
         //Get city the selected city
         Bundle bundle = this.getArguments();
         if (bundle != null){
-            String city = bundle.getString("cityName");
-            webView.loadUrl("http://technoresto.org/vdf/"+ processString(city) + "/index.html");
+            cityName = bundle.getString("cityName");
+            webView.loadUrl("http://technoresto.org/vdf/"+ processString(cityName) + "/index.html");
         }
+        Button button = (Button) view.findViewById(R.id.localisationButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locate();
+            }
+        });
         return view;
     }
 
@@ -67,8 +87,19 @@ public class CityViewFragment extends Fragment {
     }
 
     //Exercice 1.2
-    public void locate(View view){
-
+    private void locate() {
+        if( getActivity().getSupportFragmentManager().findFragmentById(R.id.cityView) != null){//Fragment present
+            MapsFragment mapsFragment = new MapsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("cityName", cityName);
+            mapsFragment.setArguments(bundle);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.cityView, mapsFragment).commit();
+        }
+        else {
+            Intent intent = new Intent(getContext(), MapsActivity.class);
+            intent.putExtra("cityName", cityName);
+            startActivity(intent);
+        }
     }
-
 }

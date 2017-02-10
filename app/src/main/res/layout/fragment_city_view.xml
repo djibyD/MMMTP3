@@ -18,7 +18,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/localisationButton"
-        android:text="Localisation"
-        android:onClick="locate"/>
+        android:text="Localisation" />
 
 </LinearLayout>
